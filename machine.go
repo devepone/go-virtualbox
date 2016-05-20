@@ -274,6 +274,16 @@ func GetMachine(id string) (*Machine, error) {
 		m.NICs = append(m.NICs, nic)
 	}
 
+	/* Extract Boot Device info */
+	for i := 1; i <= 4; i++ {
+		dev, ok := propMap[fmt.Sprintf("boot%d", i)]
+		if !ok || dev == "none" {
+			break
+		}
+
+		m.BootOrder = append(m.BootOrder, dev)
+	}
+
 	if err := s.Err(); err != nil {
 		return nil, err
 	}
