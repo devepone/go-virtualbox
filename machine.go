@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 type MachineState string
@@ -135,6 +134,8 @@ func (m *Machine) Stop() error {
 		}
 	}
 
+	/*
+	 * Don't perform busy wait here because ACPI power off doesn't have effect in all situations.
 	for m.State != Poweroff { // busy wait until the machine is stopped
 		if err := vbm("controlvm", m.Name, "acpipowerbutton"); err != nil {
 			return err
@@ -145,6 +146,8 @@ func (m *Machine) Stop() error {
 		}
 	}
 	return nil
+	*/
+	return vbm("controlvm", m.Name, "acpipowerbutton")
 }
 
 // Poweroff forcefully stops the machine. State is lost and might corrupt the disk image.
