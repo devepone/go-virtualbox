@@ -363,7 +363,6 @@ func (m *Machine) Modify() error {
 		"--bioslogodisplaytime", "0",
 		"--biosbootmenu", "disabled",
 
-		"--ostype", m.OSType,
 		"--cpus", fmt.Sprintf("%d", m.CPUs),
 		"--memory", fmt.Sprintf("%d", m.Memory),
 		"--vram", fmt.Sprintf("%d", m.VRAM),
@@ -374,7 +373,6 @@ func (m *Machine) Modify() error {
 		"--cpuhotplug", m.Flag.Get(F_cpuhotplug),
 		"--pae", m.Flag.Get(F_pae),
 		"--longmode", m.Flag.Get(F_longmode),
-		"--synthcpu", m.Flag.Get(F_synthcpu),
 		"--hpet", m.Flag.Get(F_hpet),
 		"--hwvirtex", m.Flag.Get(F_hwvirtex),
 		"--triplefaultreset", m.Flag.Get(F_triplefaultreset),
@@ -392,6 +390,10 @@ func (m *Machine) Modify() error {
 		args = append(args, fmt.Sprintf("--boot%d", i+1), dev)
 	}
 
+	for i := len(m.BootOrder); i < 4; i++ {
+		args = append(args, fmt.Sprintf("--boot%d", i+1), "none")
+	}
+
 	for i, nic := range m.NICs {
 		n := i + 1
 		args = append(args,
@@ -404,6 +406,8 @@ func (m *Machine) Modify() error {
 			args = append(args, fmt.Sprintf("--bridgeadapter%d", n), nic.HostInterface)
 		}
 	}
+
+	fmt.Println(args)
 
 	if err := vbm(args...); err != nil {
 		return err
