@@ -284,6 +284,48 @@ func GetMachine(id string) (*Machine, error) {
 		m.BootOrder = append(m.BootOrder, dev)
 	}
 
+	// Extract Flags
+	if propMap["acpi"] == "on" {
+		m.Flag |= F_acpi
+	}
+	if propMap["rtcuseutc"] == "on" {
+		m.Flag |= F_rtcuseutc
+	}
+	if propMap["ioapic"] == "on" {
+		m.Flag |= F_ioapic
+	}
+	if propMap["pae"] == "on" {
+		m.Flag |= F_pae
+	}
+	if propMap["longmode"] == "on" {
+		m.Flag |= F_longmode
+	}
+	if propMap["hpet"] == "on" {
+		m.Flag |= F_hpet
+	}
+	if propMap["hwvirtex"] == "on" {
+		m.Flag |= F_hwvirtex
+	}
+	if propMap["triplefaultreset"] == "on" {
+		m.Flag |= F_triplefaultreset
+	}
+	if propMap["nestedpaging"] == "on" {
+		m.Flag |= F_nestedpaging
+	}
+	if propMap["largepages"] == "on" {
+		m.Flag |= F_largepages
+	}
+	if propMap["vtxvpid"] == "on" {
+		m.Flag |= F_vtxvpid
+	}
+	if propMap["vtxux"] == "on" {
+		m.Flag |= F_vtxux
+	}
+	if propMap["accelerate3d"] == "on" {
+		m.Flag |= F_accelerate3d
+	}
+
+
 	if err := s.Err(); err != nil {
 		return nil, err
 	}
@@ -370,7 +412,6 @@ func (m *Machine) Modify() error {
 		"--acpi", m.Flag.Get(F_acpi),
 		"--ioapic", m.Flag.Get(F_ioapic),
 		"--rtcuseutc", m.Flag.Get(F_rtcuseutc),
-		"--cpuhotplug", m.Flag.Get(F_cpuhotplug),
 		"--pae", m.Flag.Get(F_pae),
 		"--longmode", m.Flag.Get(F_longmode),
 		"--hpet", m.Flag.Get(F_hpet),
